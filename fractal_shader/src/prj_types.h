@@ -37,7 +37,7 @@ typedef struct _Pixel
     double complex Z0;
     double complex Zn;
     uint32_t n;
-    RGB color;
+    RGB2* color;
 }Pixel;
 
 typedef struct _OrbitConf
