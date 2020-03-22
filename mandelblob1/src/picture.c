@@ -11,22 +11,32 @@
 #include <complex.h>
 #include <stdio.h>
 typedef void (colorFunc) (Frame* f, Pixel* p);
-static void distributeNumbers(Frame* f, RGB2* pixBuff);
+static void distributeNumbers(Frame* f);
 void freePicture(Frame * f)
 {
     free(f->p);
+    free(f->fRect);
 }
-void allocPicture(Frame * f, RGB2* pixBuff)
+void allocPicture(Frame * f)
 {
     printf ("alloc picture \n");
     fflush(stdout);
     f->pixelCount = f->pWidth * f->pHeight;
     f->p = calloc(f->pixelCount, sizeof(Pixel));
-    distributeNumbers(f, pixBuff);
+    f->fRect = calloc(f->pixelCount, sizeof(RGB2));
+    distributeNumbers(f);
+}
+void allocFrame(Frame * f)
+{
+    printf ("alloc picture \n");
+    fflush(stdout);
+    f->pixelCount = f->pWidth * f->pHeight;
+    f->p = calloc(f->pixelCount, sizeof(Pixel));
+    distributeNumbers(f);
 }
 
 
-void distributeNumbers(Frame* f, RGB2* pixBuff)
+void distributeNumbers(Frame* f)
 {;
     printf ("distributeNumbers \n");
     fflush(stdout);
@@ -43,6 +53,7 @@ void distributeNumbers(Frame* f, RGB2* pixBuff)
             k->yPos = i;
 
             k->Z0 = re + im*I;
+            k->color = &(f->fRect[(i * f->pWidth) +j]);
         }
     }
 }
@@ -74,9 +85,9 @@ static void tD(Frame* f, Pixel* k)
     k->color->red = (unsigned char) ((double) k->yPos/ f->pHeight * 255); ///red
     k->color->green = (unsigned char) ((double) k->xPos / f->pWidth * 255); ///green
     k->color->blue = (unsigned char) (((double) k->yPos + k->xPos) / (f->pHeight + f->pWidth) * 255); ///blue
-//    k->color.red = k->yPos;
-//    k->color.green = k->xPos;
-//    k->color.blue = 0xFB;
+//    k->color->red = k->yPos;
+//    k->color->green = k->xPos;
+//    k->color->blue = 0xFB;
 
 }
 void doTestColoring(Frame* f)

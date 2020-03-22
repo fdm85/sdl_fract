@@ -8,7 +8,7 @@
 #ifndef PICTURE_H_
 #define PICTURE_H_
 #include "prj_types.h"
-void allocPicture(Frame * f, RGB2* pixBuff);
+void allocPicture(Frame * frame);
 void freePicture(Frame * f);
 void doTestColoring(Frame* f);
 void doSwColoring(Frame* f);

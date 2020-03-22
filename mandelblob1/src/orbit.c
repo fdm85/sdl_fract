@@ -1,0 +1,61 @@
+/*
+ * orbit.c
+ *
+ *  Created on: 27.04.2019
+ *      Author: Gruenberger
+ */
+
+#include "orbit.h"
+#include <stdio.h>
+#include <complex.h>
+#include <SDL.h>
+
+SDL_atomic_t threads;
+SDL_atomic_t iA;
+
+static void fDo(Pixel *p, OrbitConf *conf) {
+	double complex Zn = p->Z0;
+	for (uint32_t n = 0uL; n < conf->Nmax; ++n) {
+		Zn = Zn * Zn + p->Z0;
+		double abs = cabs(Zn);
+		if (abs > conf->M) {
+			p->Zn = Zn;
+			p->n = n;
+			break;
+		}
+	}
+}
+
+int fOrbitRow(void *p) {
+	Frame *f = (Frame*) p;
+	uint16_t i = (int)SDL_AtomicGet(&iA);
+	for (uint32_t j = 0u; j < f->pHeight; ++j) {
+		Pixel *k = &(f->p[(i * f->pWidth) + j]);
+		fDo(k, f->orbitConf);
+	}
+	SDL_AtomicAdd(&threads, -1);
+	return 0;
+}
+
+void fOrbit(Frame *f) {
+	printf("fOrbit \n");
+	fflush(stdout);
+	SDL_AtomicSet(&threads, 0);
+	SDL_AtomicSet(&iA, 0);
+	while(SDL_AtomicGet(&iA) < (int)(f->pWidth - 1)) {
+		int i =SDL_AtomicGet(&iA);
+		if (SDL_AtomicGet(&threads) < 9) {
+			if (!(i % 100)) {
+				printf("current at I: %d | %d \n", i, f->pWidth);
+				fflush(stdout);
+			}
+			SDL_AtomicAdd(&threads, 1);
+			SDL_AtomicAdd(&iA, 1);
+			SDL_Thread *thread = SDL_CreateThread(fOrbitRow, "fOrbitRow", (void*) f);
+			/* Simply create a thread */
+			SDL_DetachThread(thread);
+		}
+	}
+	while(SDL_AtomicGet(&threads) != 0);
+}
+

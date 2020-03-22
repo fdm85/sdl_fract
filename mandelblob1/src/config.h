@@ -10,6 +10,6 @@
 
 #include "prj_types.h"
 
-bool loadCfgSucceedes(Frame *const f, int argc, char *argv[]);
+bool loadCfgSucceedes(Frame *const f);
 
 #endif /* CONFIG_H_ */

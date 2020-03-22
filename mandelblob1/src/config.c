@@ -59,10 +59,10 @@ static str2int_errno str2int(int *out, char *s, int base)
 }
 
 
-bool loadCfgSucceedes(Frame *const f, int argc, char *argv[])
+bool loadCfgSucceedes(Frame *const f)
 {
-    f->pHeight = 2000uL;
-    f->pWidth = 2000uL;
+    f->pHeight = 1000uL;
+    f->pWidth = 1000uL;
     f->fWidth = 2.0f;
     f->fHeight = 2.0f;
     f->xStart =-2.0f;
