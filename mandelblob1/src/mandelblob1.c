@@ -47,11 +47,15 @@ int main(void) {
     time(&end);
     tmp = *localtime(&end);
     double rtInSec = difftime(end, start);
-    printf ("Total Runtime in seconds: %.f \n", rtInSec);
+    printf ("Total Runtime in seconds: %01.4f \n", rtInSec);
     fflush(stdout);
 
     bool leftMouseButtonDown = false;
     bool quit = false;
+    Sint32 mouseXd;
+    Sint32 mouseYd;
+    Sint32 mouseXDiff;
+    Sint32 mouseYDiff;
     SDL_Event event;
 
     SDL_Init(SDL_INIT_VIDEO);
@@ -76,20 +80,22 @@ int main(void) {
                 break;
             case SDL_MOUSEBUTTONUP:
                 if (event.button.button == SDL_BUTTON_LEFT)
+                {
                     leftMouseButtonDown = false;
+                    mouseXDiff = event.button.x - mouseXd;
+					mouseYDiff = event.button.y - mouseYd;
+
+					printf("moved mouse, x: %4d, y: %4d \n", mouseXDiff, mouseYDiff);
+                }
                 if (event.button.button == SDL_BUTTON_MIDDLE)
                 	quit = true;
                 break;
             case SDL_MOUSEBUTTONDOWN:
                 if (event.button.button == SDL_BUTTON_LEFT)
-                    leftMouseButtonDown = true;
-                break;
-            case SDL_MOUSEMOTION:
-                if (leftMouseButtonDown)
                 {
-                    int mouseX = event.motion.x;
-                    int mouseY = event.motion.y;
-                    puts("moved mouse");
+                    leftMouseButtonDown = true;
+                    mouseXd = event.button.x;
+                    mouseYd = event.button.y;
                 }
                 break;
         }
