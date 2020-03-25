@@ -28,7 +28,7 @@ static void fDo(Pixel *p, OrbitConf *conf) {
 
 int fOrbitRow(void *p) {
 	Frame *f = (Frame*) p;
-	uint16_t i = (int)SDL_AtomicGet(&iA);
+	uint16_t i = SDL_AtomicAdd(&iA, 1);
 	for (uint32_t j = 0u; j < f->pHeight; ++j) {
 		Pixel *k = &(f->p[(i * f->pWidth) + j]);
 		fDo(k, f->orbitConf);
@@ -37,25 +37,21 @@ int fOrbitRow(void *p) {
 	return 0;
 }
 
-void fOrbit(Frame *f) {
+int fOrbit(void* p) {
+	Frame *f = (Frame *)p;
 	printf("fOrbit \n");
 	fflush(stdout);
 	SDL_AtomicSet(&threads, 0);
 	SDL_AtomicSet(&iA, 0);
 	while(SDL_AtomicGet(&iA) < (int)(f->pWidth - 1)) {
-		int i =SDL_AtomicGet(&iA);
 		if (SDL_AtomicGet(&threads) < 9) {
-			if (!(i % 100)) {
-				printf("current at I: %d | %d \n", i, f->pWidth);
-				fflush(stdout);
-			}
 			SDL_AtomicAdd(&threads, 1);
-			SDL_AtomicAdd(&iA, 1);
 			SDL_Thread *thread = SDL_CreateThread(fOrbitRow, "fOrbitRow", (void*) f);
 			/* Simply create a thread */
 			SDL_DetachThread(thread);
 		}
 	}
 	while(SDL_AtomicGet(&threads) != 0);
+	return 0;
 }
 

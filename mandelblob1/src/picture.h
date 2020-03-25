@@ -8,8 +8,10 @@
 #ifndef PICTURE_H_
 #define PICTURE_H_
 #include "prj_types.h"
-void allocPicture(Frame * frame);
-void freePicture(Frame * f);
+void allocFrame(Frame * frame);
+void freeFrame(Frame * f);
 void doTestColoring(Frame* f);
 void doSwColoring(Frame* f);
+void distributeNumbers(Frame* f);
+void resetFrame(Frame * f);
 #endif /* PICTURE_H_ */

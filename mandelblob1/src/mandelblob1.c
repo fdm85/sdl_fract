@@ -38,8 +38,8 @@ int main(void) {
     {
         return EXIT_FAILURE;
     }
-    allocPicture(&f);
-
+    allocFrame(&f);
+    distributeNumbers(&f);
     fOrbit(&f);
 
     doSwColoring(&f);
@@ -50,7 +50,7 @@ int main(void) {
     printf ("Total Runtime in seconds: %01.4f \n", rtInSec);
     fflush(stdout);
 
-    bool leftMouseButtonDown = false;
+
     bool quit = false;
     Sint32 mouseXd;
     Sint32 mouseYd;
@@ -65,11 +65,14 @@ int main(void) {
 
     SDL_Renderer * renderer = SDL_CreateRenderer(window, -1, 0);
     SDL_Texture * texture = SDL_CreateTexture(renderer,
-        SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, (int)f.pWidth, (int)f.pHeight);
+        SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, (int)f.pWidth, (int)f.pHeight);
 
     while (!quit)
     {
-    	SDL_UpdateTexture(texture, NULL, f.fRect, f.pWidth * sizeof(RGB2));
+        SDL_UpdateTexture(texture, NULL, f.fRect, f.pWidth * sizeof(RGB2));
+        SDL_RenderClear(renderer);
+        SDL_RenderCopy(renderer, texture, NULL, NULL);
+        SDL_RenderPresent(renderer);
 
         SDL_WaitEvent(&event);
 
@@ -81,11 +84,18 @@ int main(void) {
             case SDL_MOUSEBUTTONUP:
                 if (event.button.button == SDL_BUTTON_LEFT)
                 {
-                    leftMouseButtonDown = false;
                     mouseXDiff = event.button.x - mouseXd;
 					mouseYDiff = event.button.y - mouseYd;
-
 					printf("moved mouse, x: %4d, y: %4d \n", mouseXDiff, mouseYDiff);
+					double xOff = mouseXDiff;
+					double yOff = mouseYDiff;
+					xOff /= 1000.0f;
+					yOff /= 1000.0f;
+					updateWidthAndHeight(&f, 1.0f, xOff, yOff);
+					distributeNumbers(&f);
+					SDL_Thread *thread = SDL_CreateThread(fOrbit, "fOrbit", (void*) &f);
+					SDL_WaitThread(thread, NULL);
+					doSwColoring(&f);
                 }
                 if (event.button.button == SDL_BUTTON_MIDDLE)
                 	quit = true;
@@ -93,16 +103,11 @@ int main(void) {
             case SDL_MOUSEBUTTONDOWN:
                 if (event.button.button == SDL_BUTTON_LEFT)
                 {
-                    leftMouseButtonDown = true;
                     mouseXd = event.button.x;
                     mouseYd = event.button.y;
                 }
                 break;
         }
-
-        SDL_RenderClear(renderer);
-        SDL_RenderCopy(renderer, texture, NULL, NULL);
-        SDL_RenderPresent(renderer);
     }
 
     SDL_DestroyTexture(texture);
@@ -112,7 +117,7 @@ int main(void) {
     SDL_Quit();
 
 
-    freePicture(&f);
+    freeFrame(&f);
 
 	return EXIT_SUCCESS;
 }

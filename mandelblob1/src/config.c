@@ -67,9 +67,16 @@ bool loadCfgSucceedes(Frame *const f)
     f->fHeight = 2.0f;
     f->xStart =-2.0f;
     f->yStart = 1.0f;
-
     f->orbitConf->Nmax = 200uL;
     f->orbitConf->M = 16.0f * 16.0f;
-
+    f->orbitThreads = 16u;
     return true;
+}
+
+void updateWidthAndHeight(Frame *const f, double zoom, double xOffset, double yOffset)
+{
+    f->fWidth *= zoom;
+    f->fHeight *= zoom;
+    f->xStart -= xOffset;
+    f->yStart += yOffset;
 }

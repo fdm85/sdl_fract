@@ -52,14 +52,15 @@ typedef struct _Frame
 {
     uint32_t pWidth;
     uint32_t pHeight;
+    uint32_t pixelCount;
     double fWidth;
     double fHeight;
     double xStart;
     double yStart;
-    uint32_t pixelCount;
     OrbitConf* orbitConf;
     Pixel* p;
     RGB2* fRect;
+    uint8_t orbitThreads;
 }Frame;
 
 #endif /* PRJ_TYPES_H_ */

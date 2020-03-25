@@ -11,20 +11,10 @@
 #include <complex.h>
 #include <stdio.h>
 typedef void (colorFunc) (Frame* f, Pixel* p);
-static void distributeNumbers(Frame* f);
-void freePicture(Frame * f)
+void freeFrame(Frame * f)
 {
     free(f->p);
     free(f->fRect);
-}
-void allocPicture(Frame * f)
-{
-    printf ("alloc picture \n");
-    fflush(stdout);
-    f->pixelCount = f->pWidth * f->pHeight;
-    f->p = calloc(f->pixelCount, sizeof(Pixel));
-    f->fRect = calloc(f->pixelCount, sizeof(RGB2));
-    distributeNumbers(f);
 }
 void allocFrame(Frame * f)
 {
@@ -32,12 +22,16 @@ void allocFrame(Frame * f)
     fflush(stdout);
     f->pixelCount = f->pWidth * f->pHeight;
     f->p = calloc(f->pixelCount, sizeof(Pixel));
-    distributeNumbers(f);
+    f->fRect = calloc(f->pixelCount, sizeof(RGB2));
 }
 
+void resetFrame(Frame * f)
+{
+	memset(f->fRect, 255, f->pixelCount * sizeof(RGB2));
+}
 
 void distributeNumbers(Frame* f)
-{;
+{
     printf ("distributeNumbers \n");
     fflush(stdout);
     double dx = (f->fWidth/f->pWidth);
@@ -68,15 +62,6 @@ static void doIteration(Frame* f, colorFunc func)
         {
             Pixel *k = &(f->p[(i * f->pWidth) + j]);
             func(f, k);
-            if(k->n > Nmax)
-            {
-                Nmax =k->n;
-                C = k->color->blue;
-            }
-            if(k->color->blue > Cmax)
-            {
-                Cmax = k->color->blue;
-            }
         }
     }
 }

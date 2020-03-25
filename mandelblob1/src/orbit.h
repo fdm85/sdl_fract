@@ -11,5 +11,5 @@
 #include <complex.h>
 #include "prj_types.h"
 
-void fOrbit(Frame* f);
+int fOrbit(void* p);
 #endif /* ORBIT_H_ */
