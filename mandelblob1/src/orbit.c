@@ -15,15 +15,18 @@ SDL_atomic_t iA;
 
 static void fDo(Pixel *p, OrbitConf *conf) {
 	double complex Zn = p->Z0;
-	for (uint32_t n = 0uL; n < conf->Nmax; ++n) {
+	double abs;
+	uint32_t n = 0uL;
+	for (; n < conf->Nmax; ++n) {
 		Zn = Zn * Zn + p->Z0;
-		double abs = cabs(Zn);
+		abs = cabs(Zn);
 		if (abs > conf->M) {
-			p->Zn = Zn;
-			p->n = n;
 			break;
 		}
 	}
+	p->Zn = Zn;
+	p->n = n;
+	p->abs = abs;
 }
 
 int fOrbitRow(void *p) {

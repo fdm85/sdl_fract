@@ -7,6 +7,7 @@
 
 #include "picture.h"
 #include "stddef.h"
+#include <string.h>
 #include <stdlib.h>
 #include <complex.h>
 #include <stdio.h>
@@ -82,11 +83,36 @@ void doTestColoring(Frame* f)
 
 static void sW(Frame* f, Pixel* k)
 {
-    k->color->red = k->color->green = k->color->blue = (unsigned char) ( ((double)k->n/f->orbitConf->Nmax) * 255);
+	if(k->n == f->orbitConf->Nmax)
+	{
+		k->color->green = k->color->blue = (unsigned char) ( ((double)k->abs/f->orbitConf->M) * 126);
+		k->color->red = 0u;
+		k->color->alpha = 128u;
+	}
+	else
+	{
+		k->color->blue = (unsigned char) ( ((double)f->orbitConf->Nmax/k->n) * 255);
+		k->color->green = ((uint8_t)255u) - k->color->blue;
+		k->color->red = 0u; //(unsigned char) ( ((double)k->n/f->orbitConf->Nmax) * 255);
+		k->color->alpha = (unsigned char) ( ((double)f->orbitConf->Nmax/k->n) * 255);
+	}
+}
+
+static void cycleBlueGreen(Frame* f, Pixel* k)
+{
+	if(k->n < f->orbitConf->Nmax)
+	{
+		k->color->blue += 23u;
+		k->color->green += 15u;
+	}
 }
 void doSwColoring(Frame* f)
 {
     printf ("doSwColoring \n");
     fflush(stdout);
     doIteration(f, sW);
+}
+void cycleColoring(Frame* f)
+{
+    doIteration(f, cycleBlueGreen);
 }

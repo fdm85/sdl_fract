@@ -32,12 +32,13 @@ typedef union _RGB2
 
 typedef struct _Pixel
 {
+    RGB2* color;
     uint32_t xPos;
     uint32_t yPos;
     double complex Z0;
     double complex Zn;
     uint32_t n;
-    RGB2* color;
+    double abs;
 }Pixel;
 
 typedef struct _OrbitConf
