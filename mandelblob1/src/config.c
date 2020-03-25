@@ -73,10 +73,12 @@ bool loadCfgSucceedes(Frame *const f)
     return true;
 }
 
-void updateWidthAndHeight(Frame *const f, double zoom, double xOffset, double yOffset)
+void updateWidthAndHeight(Frame *const f, double zoom, int32_t xOffset, int32_t yOffset)
 {
     f->fWidth *= zoom;
     f->fHeight *= zoom;
-    f->xStart -= xOffset;
-    f->yStart += yOffset;
+    f->dx = (f->fWidth/f->pWidth);
+    f->dy = (f->fHeight/f->pHeight);
+    f->xStart -= f->dx * xOffset;
+    f->yStart += f->dx * yOffset;
 }

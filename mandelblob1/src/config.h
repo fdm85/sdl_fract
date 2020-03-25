@@ -11,5 +11,5 @@
 #include "prj_types.h"
 
 bool loadCfgSucceedes(Frame *const f);
-void updateWidthAndHeight(Frame *const f, double zoom, double xOffset, double yOffset);
+void updateWidthAndHeight(Frame *const f, double zoom, int32_t xOffset, int32_t yOffset);
 #endif /* CONFIG_H_ */

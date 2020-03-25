@@ -81,17 +81,25 @@ int main(void) {
             case SDL_QUIT:
                 quit = true;
                 break;
+            case SDL_MOUSEWHEEL:
+                if (event.wheel.y)
+                {
+					double  zoom = event.wheel.y;
+					zoom /= 50.0f;
+					updateWidthAndHeight(&f, 1.0f - zoom, 0.0f, 0.0f);
+					distributeNumbers(&f);
+					SDL_Thread *thread = SDL_CreateThread(fOrbit, "fOrbit", (void*) &f);
+					SDL_WaitThread(thread, NULL);
+					doSwColoring(&f);
+                }
+                break;
             case SDL_MOUSEBUTTONUP:
                 if (event.button.button == SDL_BUTTON_LEFT)
                 {
                     mouseXDiff = event.button.x - mouseXd;
 					mouseYDiff = event.button.y - mouseYd;
 					printf("moved mouse, x: %4d, y: %4d \n", mouseXDiff, mouseYDiff);
-					double xOff = mouseXDiff;
-					double yOff = mouseYDiff;
-					xOff /= 1000.0f;
-					yOff /= 1000.0f;
-					updateWidthAndHeight(&f, 1.0f, xOff, yOff);
+					updateWidthAndHeight(&f, 1.0f, mouseXDiff, mouseYDiff);
 					distributeNumbers(&f);
 					SDL_Thread *thread = SDL_CreateThread(fOrbit, "fOrbit", (void*) &f);
 					SDL_WaitThread(thread, NULL);

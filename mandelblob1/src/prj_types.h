@@ -57,6 +57,8 @@ typedef struct _Frame
     double fHeight;
     double xStart;
     double yStart;
+    double dx;
+    double dy;
     OrbitConf* orbitConf;
     Pixel* p;
     RGB2* fRect;
