@@ -14,4 +14,5 @@ void doTestColoring(Frame* f);
 void doSwColoring(Frame* f);
 void distributeNumbers(Frame* f);
 void resetFrame(Frame * f);
+void cycleColoring(Frame* f);
 #endif /* PICTURE_H_ */
